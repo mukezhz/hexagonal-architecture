@@ -11,12 +11,18 @@ var FileModule = fx.Module("file", fx.Options(
 	fx.Provide(
 		fx.Annotate(
 			infrastructure.NewFileSystemAdapter,
-			fx.As(new(domain.FileRepository))),
+			fx.As(new(domain.FileOutgoingPort))),
 	),
 	fx.Provide(
 		fx.Annotate(
 			application.NewFileUseCase,
 			fx.As(new(domain.FilePort)),
+		),
+	),
+	fx.Provide(
+		fx.Annotate(
+			infrastructure.NewMysqlRepository,
+			fx.As(new(domain.FileRepository)),
 		),
 	),
 	fx.Provide(application.NewProductController),

@@ -2,6 +2,7 @@ package application
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/mukezhz/hexagonal-architecture/file/domain"
 	"net/http"
 	"path/filepath"
@@ -17,18 +18,25 @@ func NewProductController(fileUC domain.FilePort) FileController {
 	}
 }
 
-func (controller *FileController) RegisterRoutes(router *gin.RouterGroup) {
-	router.POST("/file", controller.uploadFile)
+func (c *FileController) RegisterRoutes(router *gin.RouterGroup) {
+	router.POST("/file", c.uploadFile)
 }
 
-func (controller *FileController) uploadFile(ctx *gin.Context) {
+func (c *FileController) uploadFile(ctx *gin.Context) {
 	file, err := ctx.FormFile("file")
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	filePath := filepath.Join("uploads", file.Filename)
-	if err := controller.fileUseCase.Upload(file, filePath); err != nil {
+	if err := c.fileUseCase.Upload(file, filePath); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if err = c.fileUseCase.Save(domain.FileMetadata{
+		Filename: file.Filename,
+		UUID:     uuid.New().String(),
+	}); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
