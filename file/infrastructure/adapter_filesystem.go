@@ -79,6 +79,7 @@ func (fsa *FileSystemAdapter) GetAll(filePath string) ([]domain.RouteStore, erro
 			} else if l == 2 {
 				if len(row[0]) == 0 {
 					fmt.Println("no route name")
+					continue
 				}
 				routeStores = append(routeStores, domain.RouteStore{
 					RouteName: row[0],
