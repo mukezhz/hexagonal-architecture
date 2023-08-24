@@ -21,9 +21,20 @@ var FileModule = fx.Module("file", fx.Options(
 	),
 	fx.Provide(
 		fx.Annotate(
+			application.NewExcelUseCase,
+			fx.As(new(domain.ExcelIncomingPort)),
+		),
+	),
+	fx.Provide(
+		fx.Annotate(
 			infrastructure.NewMysqlRepository,
 			fx.As(new(domain.FileRepository)),
 		),
+	), fx.Provide(
+		fx.Annotate(
+			infrastructure.NewFileSystemAdapter,
+			fx.As(new(domain.ExcelOutgoingPort)),
+		),
 	),
-	fx.Provide(application.NewProductController),
+	fx.Provide(application.NewFileController),
 ))
