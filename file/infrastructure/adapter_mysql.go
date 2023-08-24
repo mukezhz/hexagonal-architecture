@@ -19,3 +19,10 @@ func (db *MysqlRepository) Create(data domain.FileMetadata) error {
 	}
 	return nil
 }
+
+func (db *MysqlRepository) CreateExcel(data []domain.RouteStore) error {
+	if err := db.Client.Create(data).Error; err != nil {
+		return err
+	}
+	return nil
+}
