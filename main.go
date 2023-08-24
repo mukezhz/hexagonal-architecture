@@ -14,6 +14,7 @@ func main() {
 	app := fx.New(
 		fx.Provide(config.NewMysqlDB),
 		fx.Options(fileConfig.FileModule),
+		fx.Options(fileConfig.ExcelModule),
 		fx.Provide(createRouter),
 		fx.Invoke(start),
 	)

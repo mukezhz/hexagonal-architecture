@@ -46,5 +46,9 @@ func (c *FileController) uploadFile(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	if err = c.excelUseCase.SaveToDB(); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	ctx.JSON(http.StatusCreated, gin.H{"message": "File uploaded successfully"})
 }

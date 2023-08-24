@@ -8,6 +8,7 @@ import (
 )
 
 var FileModule = fx.Module("file", fx.Options(
+	// for file
 	fx.Provide(
 		fx.Annotate(
 			infrastructure.NewFileSystemAdapter,
@@ -21,20 +22,31 @@ var FileModule = fx.Module("file", fx.Options(
 	),
 	fx.Provide(
 		fx.Annotate(
-			application.NewExcelUseCase,
-			fx.As(new(domain.ExcelIncomingPort)),
-		),
-	),
-	fx.Provide(
-		fx.Annotate(
 			infrastructure.NewMysqlRepository,
 			fx.As(new(domain.FileRepository)),
 		),
-	), fx.Provide(
+	),
+	fx.Provide(application.NewFileController),
+))
+
+var ExcelModule = fx.Module("excel", fx.Options(
+	// for excel
+	fx.Provide(
+		fx.Annotate(
+			infrastructure.NewMysqlRepository,
+			fx.As(new(domain.ExcelRepository)),
+		),
+	),
+	fx.Provide(
 		fx.Annotate(
 			infrastructure.NewFileSystemAdapter,
 			fx.As(new(domain.ExcelOutgoingPort)),
 		),
 	),
-	fx.Provide(application.NewFileController),
+	fx.Provide(
+		fx.Annotate(
+			application.NewExcelUseCase,
+			fx.As(new(domain.ExcelIncomingPort)),
+		),
+	),
 ))
