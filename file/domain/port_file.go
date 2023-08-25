@@ -3,7 +3,7 @@ package domain
 import "mime/multipart"
 
 /* ========== incoming ports ============= */
-type FilePort interface {
+type FileIncomingPort interface {
 	Upload(file *multipart.FileHeader, dst string) error
 	Save(file FileMetadata) error
 }

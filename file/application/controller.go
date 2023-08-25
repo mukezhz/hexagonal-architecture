@@ -4,22 +4,21 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/mukezhz/hexagonal-architecture/file/domain"
-	"log"
 	"net/http"
 	"path/filepath"
 )
 
 type FileController struct {
-	fileUseCase  domain.FilePort
+	fileUseCase  domain.FileIncomingPort
 	excelUseCase domain.ExcelIncomingPort
 }
 
-func NewFileController(fileUseCase domain.FilePort, excelUseCase domain.ExcelIncomingPort) FileController {
+func NewFileController(fileUseCase domain.FileIncomingPort, excelUseCase domain.ExcelIncomingPort) FileController {
 	return FileController{fileUseCase: fileUseCase, excelUseCase: excelUseCase}
 }
 
 func (c *FileController) RegisterRoutes(router *gin.RouterGroup) {
-	router.POST("/file", c.uploadFile)
+	router.POST("/", c.uploadFile)
 }
 
 func (c *FileController) uploadFile(ctx *gin.Context) {
@@ -40,7 +39,7 @@ func (c *FileController) uploadFile(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	log.Println("FILEPATH:", filePath)
+
 	// extract the xlxs file
 	if err = c.excelUseCase.Extract(filePath); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
