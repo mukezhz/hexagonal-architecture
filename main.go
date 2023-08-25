@@ -2,17 +2,23 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/mukezhz/hexagonal-architecture/config"
 	fileApplication "github.com/mukezhz/hexagonal-architecture/file/application"
 	fileConfig "github.com/mukezhz/hexagonal-architecture/file/config"
 	"go.uber.org/fx"
+	"log"
 )
 
 var ADDRESS string = ":8080"
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 	app := fx.New(
-		fx.Provide(config.NewMysqlDB),
+		config.Module,
 		fx.Options(fileConfig.FileModule),
 		fx.Options(fileConfig.ExcelModule),
 		fx.Provide(createRouter),

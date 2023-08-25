@@ -23,6 +23,7 @@ var FileModule = fx.Module("file", fx.Options(
 	fx.Provide(
 		fx.Annotate(
 			infrastructure.NewMysqlRepository,
+			//infrastructure.NewDynamoDBRepository,
 			fx.As(new(domain.FileRepository)),
 		),
 	),
@@ -33,7 +34,8 @@ var ExcelModule = fx.Module("excel", fx.Options(
 	// for excel
 	fx.Provide(
 		fx.Annotate(
-			infrastructure.NewMysqlRepository,
+			//infrastructure.NewMysqlRepository,
+			infrastructure.NewDynamoDBRepository,
 			fx.As(new(domain.ExcelRepository)),
 		),
 	),
