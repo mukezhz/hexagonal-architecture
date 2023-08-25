@@ -17,7 +17,7 @@ var FileModule = fx.Module("file", fx.Options(
 	fx.Provide(
 		fx.Annotate(
 			application.NewFileUseCase,
-			fx.As(new(domain.FilePort)),
+			fx.As(new(domain.FileIncomingPort)),
 		),
 	),
 	fx.Provide(
@@ -51,4 +51,5 @@ var ExcelModule = fx.Module("excel", fx.Options(
 			fx.As(new(domain.ExcelIncomingPort)),
 		),
 	),
+	fx.Provide(application.NewExcelController),
 ))

@@ -31,13 +31,14 @@ func createRouter() *gin.Engine {
 	return gin.Default()
 }
 
-func registerAllRoutes(router *gin.Engine, fileController fileApplication.FileController) {
+func registerAllRoutes(router *gin.Engine, fileController fileApplication.FileController, excelController fileApplication.ExcelController) {
 	apiGroup := router.Group("/api")
-	fileController.RegisterRoutes(apiGroup)
+	fileController.RegisterRoutes(apiGroup.Group("/files"))
+	excelController.RegisterRoutesExcel(apiGroup.Group("/sheets"))
 }
 
-func start(router *gin.Engine, fileController fileApplication.FileController) {
-	registerAllRoutes(router, fileController)
+func start(router *gin.Engine, fileController fileApplication.FileController, excelController fileApplication.ExcelController) {
+	registerAllRoutes(router, fileController, excelController)
 	if err := router.Run(ADDRESS); err != nil {
 		return
 	}
