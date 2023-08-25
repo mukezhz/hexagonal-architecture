@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/mukezhz/hexagonal-architecture/file/domain"
 )
@@ -34,4 +35,27 @@ func (db *DynamoDBRepository) CreateExcel(data []domain.RouteStore) error {
 		}
 	}
 	return nil
+}
+
+func (db *DynamoDBRepository) GetAllExcel(routeName string) ([]domain.RouteStore, error) {
+	var routeStores []domain.RouteStore
+	keyExpression := expression.Key("route_name").Equal(expression.Value(routeName))
+	expr, err := expression.NewBuilder().WithKeyCondition(keyExpression).Build()
+	if err != nil {
+		return nil, err
+	}
+	response, err := db.Client.Query(
+		context.TODO(),
+		&dynamodb.QueryInput{
+			TableName:                 aws.String(domain.TableRouteStore),
+			ExpressionAttributeNames:  expr.Names(),
+			ExpressionAttributeValues: expr.Values(),
+			KeyConditionExpression:    expr.KeyCondition(),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	err = attributevalue.UnmarshalListOfMaps(response.Items, &routeStores)
+	return routeStores, err
 }
