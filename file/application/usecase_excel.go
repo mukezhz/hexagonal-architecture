@@ -16,8 +16,8 @@ func NewExcelUseCase(excelOutgoingPort domain.ExcelOutgoingPort, excelRepository
 	return &ExcelUseCase{ExcelOutgoingPort: excelOutgoingPort, ExcelRepository: excelRepository}
 }
 
-func (e *ExcelUseCase) Extract(filePath string) error {
-	data, err := e.ExcelOutgoingPort.GetAll(filePath)
+func (e *ExcelUseCase) Extract(dst, filePath string) error {
+	data, err := e.ExcelOutgoingPort.GetAll(dst, filePath)
 	if err != nil {
 		return err
 	}
@@ -46,9 +46,9 @@ func (e *ExcelUseCase) Fetch(storeName string) ([]domain.RouteStore, error) {
 	return stores, err
 }
 
-func (e *ExcelUseCase) GetDifference(filePath string) ([]domain.RouteStore, error) {
+func (e *ExcelUseCase) GetDifference(dst, filePath string) ([]domain.RouteStore, error) {
 	var allFromExcel []domain.RouteStore
-	if err := e.Extract(filePath); err != nil {
+	if err := e.Extract(dst, filePath); err != nil {
 		return make([]domain.RouteStore, 0), err
 	}
 	allFromExcel = e.RouteStores

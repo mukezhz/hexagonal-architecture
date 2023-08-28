@@ -1,15 +1,15 @@
 package domain
 
 type ExcelIncomingPort interface {
-	Extract(filePath string) error
+	Extract(dst, filePath string) error
 	Print()
 	SaveToDB() error
 	Fetch(storeName string) ([]RouteStore, error)
-	GetDifference(filePath string) ([]RouteStore, error)
+	GetDifference(dst, filePath string) ([]RouteStore, error)
 }
 
 type ExcelOutgoingPort interface {
-	GetAll(filePath string) ([]RouteStore, error)
+	GetAll(dst, filePath string) ([]RouteStore, error)
 }
 
 type ExcelRepository interface {

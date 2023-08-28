@@ -40,7 +40,7 @@ func (c *ExcelController) addExcel(ctx *gin.Context) {
 		return
 	}
 	filePath := filepath.Join("uploads", filePayload["file_name"])
-	newData, err := c.excelUseCase.GetDifference(filePath)
+	newData, err := c.excelUseCase.GetDifference(BUCKET_NAME, filePath)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
