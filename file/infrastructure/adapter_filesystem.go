@@ -9,6 +9,7 @@ import (
 	"mime/multipart"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 type FileSystemAdapter struct {
@@ -18,10 +19,11 @@ func NewFileSystemAdapter() *FileSystemAdapter {
 	return &FileSystemAdapter{}
 }
 
-func (fsa *FileSystemAdapter) Save(file *multipart.FileHeader, dst string) error {
+func (fsa *FileSystemAdapter) Save(file *multipart.FileHeader, dst string) (string, error) {
+	filePath := filepath.Join(dst, file.Filename)
 	src, err := file.Open()
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer func(src multipart.File) {
 		err := src.Close()
@@ -30,13 +32,13 @@ func (fsa *FileSystemAdapter) Save(file *multipart.FileHeader, dst string) error
 		}
 	}(src)
 
-	if err = os.MkdirAll(filepath.Dir(dst), 0750); err != nil {
-		return err
+	if err = os.MkdirAll(filepath.Dir(filePath), 0750); err != nil {
+		return "", err
 	}
 
-	out, err := os.Create(dst)
+	out, err := os.Create(filePath)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer func(out *os.File) {
 		err := out.Close()
@@ -46,10 +48,18 @@ func (fsa *FileSystemAdapter) Save(file *multipart.FileHeader, dst string) error
 	}(out)
 
 	_, err = io.Copy(out, src)
-	return err
+	return filePath, err
 }
 
-func (fsa *FileSystemAdapter) GetAll(filePath string) ([]domain.RouteStore, error) {
+func (fsa *FileSystemAdapter) SavePublicly(file *multipart.FileHeader, dst string) (string, error) {
+	return fsa.Save(file, dst)
+}
+
+func (fsa *FileSystemAdapter) GetSignedURL(file *multipart.FileHeader, dst string, expires *time.Time) (string, error) {
+	return fsa.Save(file, dst)
+}
+
+func (fsa *FileSystemAdapter) GetAll(dst, filePath string) ([]domain.RouteStore, error) {
 	routeStores := make([]domain.RouteStore, 0)
 	f, err := excelize.OpenFile(filePath)
 	if err != nil {
