@@ -11,7 +11,8 @@ var FileModule = fx.Module("file", fx.Options(
 	// for file
 	fx.Provide(
 		fx.Annotate(
-			infrastructure.NewFileSystemAdapter,
+			//infrastructure.NewFileSystemAdapter,
+			infrastructure.NewS3Adapter,
 			fx.As(new(domain.FileOutgoingPort))),
 	),
 	fx.Provide(
