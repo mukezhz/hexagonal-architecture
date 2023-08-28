@@ -6,20 +6,25 @@ import (
 )
 
 type FileUseCase struct {
-	FileSystem domain.FileOutgoingPort
-	Repository domain.FileRepository
+	FileHandler domain.FileOutgoingPort
+	Repository  domain.FileRepository
 }
 
 func NewFileUseCase(fileRepo domain.FileOutgoingPort, repository domain.FileRepository) *FileUseCase {
-	return &FileUseCase{FileSystem: fileRepo, Repository: repository}
+	return &FileUseCase{FileHandler: fileRepo, Repository: repository}
 }
 
-func (f *FileUseCase) Upload(file *multipart.FileHeader, dst string) error {
+func (f *FileUseCase) Upload(file *multipart.FileHeader, dst string) (string, error) {
 	// business logic to check weather file should be save or not
-	if err := f.FileSystem.Save(file, dst); err != nil {
-		return err
+	_, err := f.FileHandler.Save(file, dst)
+	if err != nil {
+		return "", err
 	}
-	return nil
+	filePath, err := f.FileHandler.GetSignedURL(file, dst, nil)
+	if err != nil {
+		return filePath, err
+	}
+	return filePath, nil
 }
 
 func (f *FileUseCase) Save(file domain.FileMetadata) error {

@@ -5,7 +5,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/mukezhz/hexagonal-architecture/file/domain"
 	"net/http"
-	"path/filepath"
 )
 
 type FileController struct {
@@ -27,8 +26,9 @@ func (c *FileController) uploadFile(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	filePath := filepath.Join("uploads", file.Filename)
-	if err := c.fileUseCase.Upload(file, filePath); err != nil {
+	//filePath := filepath.Join("uploads", file.Filename)
+	filePath, err := c.fileUseCase.Upload(file, BUCKET_NAME)
+	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -41,13 +41,13 @@ func (c *FileController) uploadFile(ctx *gin.Context) {
 	}
 
 	// extract the xlxs file
-	if err = c.excelUseCase.Extract(filePath); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	if err = c.excelUseCase.SaveToDB(); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	ctx.JSON(http.StatusCreated, gin.H{"message": "File uploaded successfully"})
+	//if err = c.excelUseCase.Extract(BUCKET_NAME, filePath); err != nil {
+	//	ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	//	return
+	//}
+	//if err = c.excelUseCase.SaveToDB(); err != nil {
+	//	ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	//	return
+	//}
+	ctx.JSON(http.StatusCreated, gin.H{"message": "File uploaded successfully", "path": filePath})
 }
