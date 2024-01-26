@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/mukezhz/hexagonal-architecture/config"
+	fileConfig "github.com/mukezhz/hexagonal-architecture/file"
 	fileApplication "github.com/mukezhz/hexagonal-architecture/file/application"
-	fileConfig "github.com/mukezhz/hexagonal-architecture/file/config"
 	"go.uber.org/fx"
 	"log"
 )

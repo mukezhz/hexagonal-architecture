@@ -1,4 +1,4 @@
-package config
+package file
 
 import (
 	"github.com/mukezhz/hexagonal-architecture/file/application"
